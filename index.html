@@ -382,6 +382,37 @@ table.warta tfoot td {
 
 <div class="footer">Powered by • Tim Multimedia Paroki Argapura • © 2026</div>
 
+<!-- NOTIFIKASI INSTALL KE LAYAR UTAMA (MUNCUL SAAT SCROLL KE BAWAH) -->
+<div id="pwaInstallBanner" style="display:none; position:fixed; left:14px; right:14px; bottom:16px; z-index:9990; background:linear-gradient(135deg,#122A6B 0%,#1E3A8A 100%); color:#fff; border:1px solid #C5A059; border-radius:16px; padding:12px 14px; box-shadow:0 12px 30px rgba(15,42,94,.28); align-items:center; justify-content:space-between; gap:10px; max-width:680px; margin:0 auto;">
+  <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
+    <span style="font-size:22px; line-height:1;">📲</span>
+    <div style="min-width:0;">
+      <div style="font-size:13px; font-weight:800; line-height:1.25;">Pasang di Layar Utama</div>
+      <div id="pwaInstallDesc" style="font-size:11px; color:#E2E8F0; margin-top:2px; line-height:1.35;">Akses Warta Paroki lebih cepat dari layar HP Anda.</div>
+    </div>
+  </div>
+  <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+    <button id="pwaInstallBtn" type="button" style="background:#C5A059; color:#0F172A; border:none; border-radius:999px; padding:8px 14px; font-size:12px; font-weight:800; cursor:pointer;">Instal</button>
+    <button id="pwaDismissBtn" type="button" aria-label="Tutup" style="background:rgba(255,255,255,.14); color:#fff; border:none; border-radius:999px; width:28px; height:28px; font-size:13px; font-weight:700; cursor:pointer;">✕</button>
+  </div>
+</div>
+
+<!-- PANDUAN INSTAL KHUSUS IPHONE / IPAD (SAFARI) -->
+<div id="iosInstallModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:10050; place-items:center; padding:16px;" onclick="if(event.target===this) this.style.display='none';">
+  <div style="background:#fff; color:#1e293b; border-radius:20px; max-width:400px; width:100%; padding:20px; position:relative; box-shadow:0 20px 40px rgba(0,0,0,.3);">
+    <button type="button" onclick="document.getElementById('iosInstallModal').style.display='none'" style="position:absolute; top:14px; right:14px; background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; font-weight:800; cursor:pointer;">✕</button>
+    <h3 style="margin:0 0 8px; font-size:17px; color:#1E3A8A;">📲 Instal di iPhone / iPad</h3>
+    <p style="margin:0 0 12px; font-size:13px; color:#475569; line-height:1.6;">
+      Di browser <strong>Safari</strong>, ikuti langkah berikut agar aplikasi muncul di layar utama:
+    </p>
+    <ol style="margin:0 0 16px; padding-left:18px; font-size:13px; color:#334155; line-height:1.7;">
+      <li>Ketuk tombol <strong>Bagikan</strong> (ikon kotak dengan panah ke atas) di Safari.</li>
+      <li>Gulir ke bawah lalu pilih <strong>Tambah ke Layar Utama</strong> (<em>Add to Home Screen</em>).</li>
+      <li>Ketuk <strong>Tambah</strong> di pojok kanan atas.</li>
+    </ol>
+    <button type="button" onclick="document.getElementById('iosInstallModal').style.display='none'" style="width:100%; background:#1E3A8A; color:#fff; border:none; border-radius:12px; padding:11px; font-weight:800; font-size:13px; cursor:pointer;">Mengerti</button>
+  </div>
+</div>  
 <div id="galeriLightbox"><div class="lb-close" onclick="closeLb()">✕</div><div class="lb-inner"><img id="lbImg" src=""><div id="lbCaption" class="lb-caption"></div></div></div>
 
 <div id="umkmModal" style="position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;display:none;place-items:center;padding:16px;box-sizing:border-box;" onclick="if(event.target===this) closeUmkmModal();">
