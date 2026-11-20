@@ -584,8 +584,13 @@ function renderKolekteEntrop(data) {
 }
 
 function renderPengumuman(list) {
+  const sig = JSON.stringify(list);
+  if (sig === lastPengumumanSig) return;
+  lastPengumumanSig = sig;
+
   const kawin = list.filter(x => x.jenis === 'perkawinan');
   const keg = list.filter(x => x.jenis === 'kegiatan');
+  
   
   const pkBox = document.getElementById('pengKawin');
   if(pkBox) {
