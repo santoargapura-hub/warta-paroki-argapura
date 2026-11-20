@@ -4,4 +4,3 @@ Thumbs.db
 .env
 .env.local
 config.php
-supabase-config.js
