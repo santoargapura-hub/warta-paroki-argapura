@@ -59,6 +59,7 @@ let activePage = 'home';
 let hasInteractiveMedia = false;
 let lastPodcastSig = '';
 let lastGaleriSig = '';
+let lastPengumumanSig = '';
 
 function getTodayDateStr(){
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -520,6 +521,10 @@ function renderKolekteEntrop(data) {
 }
 
 function renderPengumuman(list) {
+  const sig = JSON.stringify(list);
+  if (sig === lastPengumumanSig) return; // <-- Jangan render ulang jika data sama
+  lastPengumumanSig = sig;
+
   const kawin = list.filter(x => x.jenis === 'perkawinan');
   const keg = list.filter(x => x.jenis === 'kegiatan');
   
