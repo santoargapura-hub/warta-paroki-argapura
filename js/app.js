@@ -1,6 +1,6 @@
 // APLIKASI UTAMA WARTA PAROKI (SUPABASE BACKEND)
 
-// Canvas Asap Dupa Header
+// Canvas Asap Dupa Header Top
 (function(){
   const canvas = document.getElementById('incenseCanvas');
   if(!canvas) return;
