@@ -108,8 +108,18 @@ function ytEmbedJS(url){
 
 function autoLinkPengumumanJS(text) {
   if (!text) return '';
-  const urlRegex = /(?<!href=["\'])(https?:\/\/[^\s<]+)/gi;
-  return text.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #1E3A8A; text-decoration: underline;">$1</a>');
+  const safeText = esc(text);
+  const urlRegex = /(https?:\/\/[^\s<]+)/gi;
+  const linked = safeText.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" style="color: #1E3A8A; text-decoration: underline;">$1</a>');
+  return linked.replace(/\r?\n/g, '<br>');
+}
+
+function formatRichOrPlainText(text) {
+  if (!text) return '';
+  if (/<(p|br|div|ul|ol|li)\b[^>]*>/i.test(text)) {
+    return text;
+  }
+  return esc(text).replace(/\r?\n/g, '<br>');
 }
 
 function esc(s){
@@ -419,11 +429,11 @@ async function loadLiturgiData(targetDate) {
 
   if (data) {
     if(b1j) b1j.textContent = data.bacaan1_judul || 'Bacaan I';
-    if(b1i) b1i.innerHTML = data.bacaan1_isi || '';
+    if(b1i) b1i.innerHTML = formatRichOrPlainText(data.bacaan1_isi);
     if(b2j) b2j.textContent = data.bacaan2_judul || 'Bacaan II';
-    if(b2i) b2i.innerHTML = data.bacaan2_isi || '';
+    if(b2i) b2i.innerHTML = formatRichOrPlainText(data.bacaan2_isi);
     if(inj) inj.textContent = data.injil_judul || 'Injil';
-    if(inji) inji.innerHTML = data.injil_isi || '';
+    if(inji) inji.innerHTML = formatRichOrPlainText(data.injil_isi);
     if(ket) {
       ket.textContent = data.keterangan_liturgi || '';
       ket.style.display = (data.keterangan_liturgi && data.keterangan_liturgi.trim() !== '') ? 'block' : 'none';
@@ -522,7 +532,7 @@ function renderKolekteEntrop(data) {
 
 function renderPengumuman(list) {
   const sig = JSON.stringify(list);
-  if (sig === lastPengumumanSig) return; // <-- Jangan render ulang jika data sama
+  if (sig === lastPengumumanSig) return;
   lastPengumumanSig = sig;
 
   const kawin = list.filter(x => x.jenis === 'perkawinan');
@@ -540,7 +550,7 @@ function renderPengumuman(list) {
           </div>
           <div style='font-size:12px;color:#64748b; margin-top:4px;'>${p.tanggal ? new Date(p.tanggal).toLocaleDateString('id-ID') : ''}</div>
           <div class='peng-content' style='display:none; border-top:1px dashed #cbd5e1; padding-top:10px; margin-top:10px;'>
-            <div class='peng-isi' style='color:#374151'>${autoLinkPengumumanJS(p.isi||'')}</div>
+            <div class='peng-isi' style='color:#374151; line-height:1.65;'>${autoLinkPengumumanJS(p.isi||'')}</div>
             ${p.gambar ? `<img src="${esc(p.gambar)}" style="width:140px;height:100px;object-fit:cover;border-radius:8px;margin-top:10px;cursor:zoom-in" onclick="openLb('${esc(p.gambar)}','${esc(p.judul)}')">` : ''}
           </div>
         </div>
@@ -560,7 +570,7 @@ function renderPengumuman(list) {
           </div>
           <div style='font-size:12px;color:#64748b; margin-top:4px;'>${p.tanggal ? new Date(p.tanggal).toLocaleDateString('id-ID') : ''}</div>
           <div class='peng-content' style='display:none; border-top:1px dashed #cbd5e1; padding-top:10px; margin-top:10px;'>
-            <div class='peng-isi' style='color:#374151'>${autoLinkPengumumanJS(p.isi||'')}</div>
+            <div class='peng-isi' style='color:#374151; line-height:1.65;'>${autoLinkPengumumanJS(p.isi||'')}</div>
             ${p.gambar ? `<img src="${esc(p.gambar)}" style="width:140px;height:100px;object-fit:cover;border-radius:8px;margin-top:10px;cursor:zoom-in" onclick="openLb('${esc(p.gambar)}','${esc(p.judul)}')">` : ''}
           </div>
         </div>
