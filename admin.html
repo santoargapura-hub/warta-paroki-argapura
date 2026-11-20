@@ -61,7 +61,7 @@
     .btn-danger { background:#b42318; color:#fff }
     .btn-light { background:#edf2f7; color:var(--navy) }
     .btn-small { padding:7px 10px; font-size:12px }
-    .top-actions { display:flex; gap:8px; align-items:center }
+    .top-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
     .tabs {
       display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;
       position:sticky; top:0; z-index:10; background:var(--cream); padding:8px 0;
@@ -130,6 +130,7 @@
       <p>Panel Administrator · Paroki St. Petrus dan Paulus Argapura</p>
     </div>
     <div class="top-actions">
+      <a href="index.html" class="btn btn-light btn-small" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px;">← Halaman Utama</a>
       <span id="adminIdentity" class="status"></span>
       <button id="logoutBtn" class="btn btn-gold hidden" type="button" onclick="handleLogout()">Keluar</button>
     </div>
