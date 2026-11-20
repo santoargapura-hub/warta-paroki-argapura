@@ -418,7 +418,6 @@ function applySettings(s) {
 }
 
 async function loadLiturgiData(targetDate) {
-  const { data } = await supabaseClient.from('warta_liturgi_bank').select('*').eq('tanggal', targetDate).maybeSingle();
   const b1j = document.getElementById('b1Judul');
   const b1i = document.getElementById('b1Isi');
   const b2j = document.getElementById('b2Judul');
@@ -427,25 +426,57 @@ async function loadLiturgiData(targetDate) {
   const inji = document.getElementById('injilIsi');
   const ket = document.getElementById('liturgiKeterangan');
 
+  // 1. Cek bacaan pada tanggal yang diminta
+  let { data } = await supabaseClient
+    .from('warta_liturgi_bank')
+    .select('*')
+    .eq('tanggal', targetDate)
+    .maybeSingle();
+
+  let isFallbackDate = false;
+
+  // 2. Jika kosong pada tanggal tersebut, cari tanggal sebelumnya yang tersedia
+  if (!data) {
+    const { data: prevRows } = await supabaseClient
+      .from('warta_liturgi_bank')
+      .select('*')
+      .lte('tanggal', targetDate)
+      .order('tanggal', { ascending: false })
+      .limit(1);
+
+    if (prevRows && prevRows.length > 0) {
+      data = prevRows[0];
+      isFallbackDate = data.tanggal !== targetDate;
+    }
+  }
+
   if (data) {
-    if(b1j) b1j.textContent = data.bacaan1_judul || 'Bacaan I';
-    if(b1i) b1i.innerHTML = formatRichOrPlainText(data.bacaan1_isi);
-    if(b2j) b2j.textContent = data.bacaan2_judul || 'Bacaan II';
-    if(b2i) b2i.innerHTML = formatRichOrPlainText(data.bacaan2_isi);
-    if(inj) inj.textContent = data.injil_judul || 'Injil';
-    if(inji) inji.innerHTML = formatRichOrPlainText(data.injil_isi);
-    if(ket) {
-      ket.textContent = data.keterangan_liturgi || '';
-      ket.style.display = (data.keterangan_liturgi && data.keterangan_liturgi.trim() !== '') ? 'block' : 'none';
+    if (b1j) b1j.textContent = data.bacaan1_judul || 'Bacaan I';
+    if (b1i) b1i.innerHTML = formatRichOrPlainText(data.bacaan1_isi);
+    if (b2j) b2j.textContent = data.bacaan2_judul || 'Bacaan II';
+    if (b2i) b2i.innerHTML = formatRichOrPlainText(data.bacaan2_isi);
+    if (inj) inj.textContent = data.injil_judul || 'Injil';
+    if (inji) inji.innerHTML = formatRichOrPlainText(data.injil_isi);
+
+    if (ket) {
+      const catatanTanggal = isFallbackDate
+        ? `Menampilkan bacaan terakhir tersedia (${data.tanggal}).`
+        : '';
+      const gabunganKet = [catatanTanggal, data.keterangan_liturgi]
+        .filter(Boolean)
+        .join('\n');
+
+      ket.textContent = gabunganKet;
+      ket.style.display = gabunganKet.trim() !== '' ? 'block' : 'none';
     }
   } else {
-    if(b1j) b1j.textContent = 'Belum ada data';
-    if(b1i) b1i.innerHTML = `<i style="color:#64748b">Tidak ada data bacaan untuk tanggal ${targetDate}.</i>`;
-    if(b2j) b2j.textContent = 'Belum ada data';
-    if(b2i) b2i.innerHTML = '';
-    if(inj) inj.textContent = 'Belum ada data';
-    if(inji) inji.innerHTML = '';
-    if(ket) ket.style.display = 'none';
+    if (b1j) b1j.textContent = 'Belum ada data';
+    if (b1i) b1i.innerHTML = `<i style="color:#64748b">Belum ada data bacaan liturgi yang tersedia.</i>`;
+    if (b2j) b2j.textContent = 'Belum ada data';
+    if (b2i) b2i.innerHTML = '';
+    if (inj) inj.textContent = 'Belum ada data';
+    if (inji) inji.innerHTML = '';
+    if (ket) ket.style.display = 'none';
   }
 }
 
