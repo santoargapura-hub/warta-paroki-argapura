@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Warta Paroki Argapura</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:#102746; --navy2:#183b62; --gold:#c9a45c;
+      --cream:#f5f2eb; --white:#fff; --text:#253247;
+      --muted:#718096; --border:#e2e8f0; --danger:#b42318;
+      --success:#167647; --shadow:0 8px 28px rgba(16,39,70,.08);
+    }
+    * { box-sizing:border-box }
+    body {
+      margin:0; background:var(--cream); color:var(--text);
+      font-family:Inter,Arial,sans-serif; font-size:14px;
+    }
+    button,input,textarea,select { font:inherit }
+    button { cursor:pointer }
+    .topbar {
+      background:linear-gradient(120deg,var(--navy),var(--navy2));
+      color:#fff; padding:20px 24px; border-bottom:4px solid var(--gold);
+    }
+    .topbar-inner {
+      max-width:1400px; margin:auto; display:flex; align-items:center;
+      justify-content:space-between; gap:15px;
+    }
+    .brand h1 { margin:0; font-size:19px; letter-spacing:.3px }
+    .brand p { margin:6px 0 0; color:#d8e1ed; font-size:12px }
+    .container { max-width:1400px; margin:24px auto; padding:0 18px }
+    .panel {
+      background:#fff; border:1px solid var(--border); border-radius:14px;
+      box-shadow:var(--shadow); padding:22px; margin-bottom:18px;
+    }
+    .login-wrap { max-width:430px; margin:70px auto }
+    h2 { margin:0 0 8px; color:var(--navy); font-size:20px }
+    h3 { color:var(--navy); font-size:16px; margin:0 0 15px }
+    .muted { color:var(--muted); line-height:1.6 }
+    .field { margin-bottom:14px }
+    label { display:block; margin-bottom:7px; font-weight:600; color:#34445b }
+    input,textarea,select {
+      display:block; width:100%; padding:11px 12px; border:1px solid #cbd5e1;
+      border-radius:8px; background:#fff; color:var(--text); outline:none;
+    }
+    input:focus,textarea:focus,select:focus {
+      border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,164,92,.15);
+    }
+    textarea { min-height:100px; resize:vertical; line-height:1.5 }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px }
+    .btn {
+      border:0; border-radius:8px; padding:11px 16px; font-weight:700;
+      background:var(--navy); color:#fff;
+    }
+    .btn:hover { background:var(--navy2) }
+    .btn-gold { background:var(--gold); color:#17263b }
+    .btn-danger { background:#b42318; color:#fff }
+    .btn-light { background:#edf2f7; color:var(--navy) }
+    .btn-small { padding:7px 10px; font-size:12px }
+    .top-actions { display:flex; gap:8px; align-items:center }
+    .tabs {
+      display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;
+      position:sticky; top:0; z-index:10; background:var(--cream); padding:8px 0;
+    }
+    .tab-btn {
+      border:1px solid #d7dfeb; border-radius:8px; padding:10px 13px;
+      color:var(--navy); background:#fff; font-weight:700;
+    }
+    .tab-btn.active { background:var(--navy); color:#fff; border-color:var(--navy) }
+    .tab-content { display:none }
+    .tab-content.active { display:block }
+    .section-head {
+      display:flex; justify-content:space-between; align-items:center;
+      gap:12px; flex-wrap:wrap; margin-bottom:18px;
+    }
+    .form-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:15px }
+    .record-list { display:grid; gap:10px; margin-top:18px }
+    .record {
+      border:1px solid var(--border); border-radius:10px; padding:13px;
+      display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
+      background:#fff;
+    }
+    .record strong { color:var(--navy); display:block; margin-bottom:5px }
+    .record small { color:var(--muted); line-height:1.5; overflow-wrap:anywhere }
+    .record-actions { display:flex; gap:6px; flex-shrink:0 }
+    .notice {
+      display:none; padding:12px 14px; border-radius:8px; margin-bottom:15px;
+      line-height:1.5;
+    }
+    .notice.show { display:block }
+    .notice.success { background:#e8f5ed; color:#12633c }
+    .notice.error { background:#fff0ef; color:#a1261c }
+    .hint { font-size:12px; color:var(--muted); margin-top:6px; line-height:1.5 }
+    .divider { border:0; border-top:1px solid var(--border); margin:22px 0 }
+    .hidden { display:none!important }
+    .circle-preview {
+      width:72px; height:72px; border-radius:50%; overflow:hidden;
+      border:2px solid var(--gold); margin-top:8px; background:#f8fafc;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .circle-preview img { width:100%; height:100%; object-fit:cover; display:block }
+    .table-wrap { overflow-x:auto }
+    table { border-collapse:collapse; width:100%; min-width:700px }
+    th,td { border:1px solid var(--border); padding:9px; text-align:left; vertical-align:top }
+    th { background:#f2f5f9; color:var(--navy) }
+    td input,td textarea { min-width:100px; padding:8px }
+    .status { font-size:12px; color:#d8e1ed }
+    @media(max-width:720px) {
+      .grid,.grid-3 { grid-template-columns:1fr }
+      .topbar { padding:17px }
+      .topbar-inner { align-items:flex-start; flex-direction:column }
+      .panel { padding:16px }
+      .record { flex-direction:column }
+      .record-actions { width:100% }
+      .record-actions button { flex:1 }
+      .login-wrap { margin:35px auto }
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <h1>WARTA PAROKI ARGAPURA</h1>
+      <p>Panel Administrator · Paroki St. Petrus dan Paulus Argapura</p>
+    </div>
+    <div class="top-actions">
+      <span id="adminIdentity" class="status"></span>
+      <button id="logoutBtn" class="btn btn-gold hidden" type="button" onclick="handleLogout()">Keluar</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- LOGIN -->
+  <section id="loginSection" class="panel login-wrap">
+    <h2>Login Administrator</h2>
+    <p class="muted">Masuk menggunakan akun administrator resmi Warta Paroki.</p>
+    <div id="loginNotice" class="notice"></div>
+    <form id="loginForm">
+      <div class="field">
+        <label for="loginEmail">Email administrator</label>
+        <input id="loginEmail" type="email" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="loginPassword">Kata sandi</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn" type="submit" style="width:100%">Masuk ke Dashboard</button>
+    </form>
+    <p class="hint">Akses dashboard hanya diberikan kepada akun dengan role admin pada Supabase Authentication.</p>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dashboardSection" class="hidden">
+    <div id="globalNotice" class="notice"></div>
+
+    <nav class="tabs" aria-label="Menu administrasi">
+      <button class="tab-btn active" type="button" onclick="switchTab('tab-settings',this)">Pengaturan</button>
+      <button class="tab-btn" type="button" onclick="switchTab('tab-liturgi',this)">Liturgi</button>
+      <button class="tab-btn" type="button" onclick="switchTab('tab-petugas',this)">Petugas</button>
+      <button class="tab-btn" type="button" onclick="switchTab('tab-kolekte',this)">Kolekte</button>
+      <button class="tab-btn" type="button" onclick="switchTab('tab-lagu',this)">Lagu Misa</button>
+      <button class="tab-btn" type="button" onclick="switchTab('tab-pengumuman',this)">Pengumuman</button>
+      <button class="tab-btn" type="button" onclick="switchTab('tab-galeri',this)">Galeri</button>
+      <button class="tab-btn" type="button" onclick="switchTab('tab-madah',this)">Madah Bhakti</button>
+      <button class="tab-btn" type="button" onclick="switchTab('tab-dokumen',this)">Dokumen PDF</button>
+      <button class="tab-btn" type="button" onclick="switchTab('tab-umkm',this)">UMKM</button>
+    </nav>
+
+    <!-- PENGATURAN -->
+    <section id="tab-settings" class="tab-content active panel">
+      <div class="section-head">
+        <div><h2>Pengaturan Website</h2><p class="muted">Identitas, teks, media, rekening, dan konten utama.</p></div>
+      </div>
+      <form id="settingsForm">
+        <h3>Identitas dan tampilan</h3>
+        <div class="grid">
+          <div class="field"><label>Judul minggu ini</label><input data-setting="judul_minggu_ini"></div>
+          <div class="field"><label>Teks berjalan</label><input data-setting="running_text"></div>
+          <div class="field">
+            <label>Logo paroki (otomatis presisi bulat di halaman utama)</label>
+            <input id="logo_paroki_file" type="file" accept="image/png,image/jpeg,image/webp">
+            <div class="hint" id="logo_paroki_current"></div>
+            <div class="circle-preview" id="logo_paroki_preview_wrap" style="display:none;"><img id="logo_paroki_preview" alt="Preview Logo"></div>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <h3>Renungan Minggu / Perayaan</h3>
+        <div class="field"><label>Judul renungan</label><input data-setting="renungan_judul"></div>
+        <div class="field"><label>Isi renungan</label><textarea data-setting="renungan_isi"></textarea></div>
+
+        <hr class="divider">
+        <h3>Liturgi dan Mazmur</h3>
+        <div class="grid">
+          <div class="field"><label>Keterangan liturgi</label><textarea data-setting="liturgi_keterangan"></textarea></div>
+          <div class="field"><label>Judul Mazmur / refren</label><textarea data-setting="mazmur_refren"></textarea></div>
+          <div class="field"><label>Notasi Mazmur</label><textarea data-setting="mazmur_notasi"></textarea></div>
+          <div class="field"><label>Isi Mazmur</label><textarea data-setting="mazmur_isi"></textarea></div>
+          <div class="field"><label>Gambar Mazmur</label><input id="mazmur_gambar_file" type="file" accept="image/png,image/jpeg,image/webp"><div class="hint" id="mazmur_gambar_current"></div></div>
+        </div>
+
+        <hr class="divider">
+        <h3>Live Streaming</h3>
+        <div class="grid">
+          <div class="field"><label>Link YouTube Live</label><input data-setting="youtube_link" type="url" placeholder="https://www.youtube.com/..."></div>
+          <div class="field"><label>Judul streaming</label><input data-setting="youtube_judul"></div>
+        </div>
+
+        <hr class="divider">
+        <h3>Podcast</h3>
+        <div class="grid">
+          <div class="field"><label>Judul podcast utama</label><input data-setting="podcast_judul"></div>
+          <div class="field"><label>Link podcast 1</label><input data-setting="podcast_link" type="url"></div>
+          <div class="field"><label>Judul podcast 2</label><input data-setting="podcast_judul2"></div>
+          <div class="field"><label>Link podcast 2</label><input data-setting="podcast_link2" type="url"></div>
+          <div class="field"><label>Judul podcast 3</label><input data-setting="podcast_judul3"></div>
+          <div class="field"><label>Link podcast 3</label><input data-setting="podcast_link3" type="url"></div>
+          <div class="field"><label>Judul podcast 4</label><input data-setting="podcast_judul4"></div>
+          <div class="field"><label>Link podcast 4</label><input data-setting="podcast_link4" type="url"></div>
+        </div>
+
+        <hr class="divider">
+        <h3>Renungan DoReMi</h3>
+        <div class="grid">
+          <div class="field"><label>Judul DoReMi</label><input data-setting="doremi_judul"></div>
+          <div class="field"><label>Link DoReMi</label><input data-setting="doremi_link" type="url"></div>
+          <div class="field"><label>Keterangan DoReMi</label><textarea data-setting="doremi_keterangan"></textarea></div>
+          <div class="field">
+            <label>Foto DoReMi (otomatis presisi bulat di samping judul DoReMi)</label>
+            <input id="doremi_foto_file" type="file" accept="image/png,image/jpeg,image/webp">
+            <div class="hint" id="doremi_foto_current"></div>
+            <div class="circle-preview" id="doremi_foto_preview_wrap" style="display:none;"><img id="doremi_foto_preview" alt="Preview DoReMi"></div>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <h3>Rekening dan laporan keuangan</h3>
+        <div class="field"><label>Informasi rekening</label><textarea data-setting="rekening_info"></textarea></div>
+        <div class="grid">
+          <div class="field"><label>Barcode / QRIS</label><input id="rekening_barcode_file" type="file" accept="image/png,image/jpeg,image/webp"><div class="hint" id="rekening_barcode_current"></div></div>
+          <div class="field"><label>Gambar laporan keuangan</label><input id="laporan_gambar_file" type="file" accept="image/png,image/jpeg,image/webp"><div class="hint" id="laporan_gambar_current"></div></div>
+        </div>
+
+        <hr class="divider">
+        <h3>Media interaktif pada Halaman Utama & Pengumuman</h3>
+        <div class="grid">
+          <div class="field">
+            <label>Jenis media</label>
+            <select data-setting="media_interaktif_tipe"><option value="image">Gambar</option><option value="video">Video</option></select>
+          </div>
+          <div class="field"><label>URL media (opsional)</label><input data-setting="media_interaktif_url" type="url" placeholder="https://..."></div>
+          <div class="field"><label>Upload media (opsional)</label><input id="media_interaktif_file" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm"></div>
+          <div class="field"><label>Keterangan media</label><textarea data-setting="media_interaktif_keterangan"></textarea></div>
+        </div>
+
+        <div class="form-actions"><button class="btn btn-gold" type="submit">Simpan Semua Pengaturan</button></div>
+      </form>
+    </section>
+
+    <!-- LITURGI -->
+    <section id="tab-liturgi" class="tab-content panel">
+      <h2>Bank Liturgi Harian</h2>
+      <p class="muted">Simpan bacaan berdasarkan tanggal. Tanggal yang sama akan diperbarui, bukan dibuat ganda.</p>
+      <form id="liturgiForm">
+        <div class="field"><label>Tanggal liturgi</label><input id="lit_tanggal" type="date" required></div>
+        <div class="grid">
+          <div class="field"><label>Judul Bacaan I</label><input id="lit_bacaan1_judul"></div>
+          <div class="field"><label>Isi Bacaan I</label><textarea id="lit_bacaan1_isi"></textarea></div>
+          <div class="field"><label>Judul Bacaan II</label><input id="lit_bacaan2_judul"></div>
+          <div class="field"><label>Isi Bacaan II</label><textarea id="lit_bacaan2_isi"></textarea></div>
+          <div class="field"><label>Judul Injil</label><input id="lit_injil_judul"></div>
+          <div class="field"><label>Isi Injil</label><textarea id="lit_injil_isi"></textarea></div>
+        </div>
+        <div class="field"><label>Keterangan liturgi hari tersebut</label><textarea id="lit_keterangan"></textarea></div>
+        <div class="form-actions">
+          <button class="btn btn-gold" type="submit">Simpan Liturgi</button>
+          <button class="btn btn-light" type="button" onclick="resetLiturgiForm()">Kosongkan Form</button>
+        </div>
+      </form>
+      <hr class="divider">
+      <h3>Daftar Bank Liturgi</h3>
+      <div id="liturgiList" class="record-list"></div>
+    </section>
+
+    <!-- PETUGAS -->
+    <section id="tab-petugas" class="tab-content panel">
+      <h2>Petugas Liturgi</h2>
+      <p class="muted">Kelola petugas untuk minggu ini maupun minggu depan.</p>
+      <form id="petugasForm">
+        <input id="petugas_id" type="hidden">
+        <div class="grid">
+          <div class="field"><label>Periode</label><select id="petugas_periode"><option value="minggu_ini">Minggu Ini</option><option value="minggu_depan">Minggu Depan</option></select></div>
+          <div class="field"><label>Nama / jadwal Misa</label><input id="petugas_misa"></div>
+          <div class="field"><label>Koor</label><input id="petugas_koor"></div>
+          <div class="field"><label>Akolit</label><input id="petugas_akolit"></div>
+          <div class="field"><label>Lektor</label><input id="petugas_lektor"></div>
+          <div class="field"><label>Pemazmur</label><input id="petugas_pemazmur"></div>
+          <div class="field"><label>Dirigen</label><input id="petugas_dirigen"></div>
+          <div class="field"><label>Organis</label><input id="petugas_organis"></div>
+          <div class="field"><label>Misdinar</label><textarea id="petugas_misdinar"></textarea></div>
+          <div class="field"><label>Tatalaksana</label><input id="petugas_tatalaksana"></div>
+          <div class="field"><label>Imam</label><input id="petugas_imam"></div>
+          <div class="field"><label>Piket</label><input id="petugas_piket"></div>
+          <div class="field"><label>Hias</label><input id="petugas_hias"></div>
+          <div class="field"><label>Parkir</label><input id="petugas_parkir"></div>
+          <div class="field"><label>Komuni</label><input id="petugas_komuni"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" type="submit">Simpan Petugas</button>
+          <button class="btn btn-light" type="button" onclick="resetPetugasForm()">Form Baru</button>
+        </div>
+      </form>
+      <hr class="divider">
+      <h3>Daftar Petugas</h3>
+      <div id="petugasList" class="record-list"></div>
+    </section>
+
+    <!-- KOLEKTE -->
+    <section id="tab-kolekte" class="tab-content panel">
+      <h2>Kolekte Pusat dan Stasi Entrop</h2>
+      <p class="muted">Data lama tidak akan dihapus massal. Setiap baris dikelola satu per satu.</p>
+      <h3>Kolekte Pusat</h3>
+      <form id="kolekteForm">
+        <input id="kolekte_id" type="hidden">
+        <div class="field"><label>Uraian / tanggal</label><input id="kolekte_uraian"></div>
+        <div class="grid-3">
+          <div class="field"><label>Misa 1 / Ket 1</label><input id="kolekte_ket1"></div>
+          <div class="field"><label>Misa 2 / Ket 2</label><input id="kolekte_ket2"></div>
+          <div class="field"><label>Misa 3 / Ket 3</label><input id="kolekte_ket3"></div>
+        </div>
+        <div class="field"><label>Keterangan lain</label><input id="kolekte_ket_lain"></div>
+        <button class="btn btn-gold" type="submit">Simpan Baris Kolekte Pusat</button>
+      </form>
+      <div id="kolekteList" class="record-list"></div>
+
+      <hr class="divider">
+      <h3>Keterangan Kolekte Pusat</h3>
+      <div class="field"><label>Keterangan tambahan</label><textarea id="kolekte_keterangan"></textarea></div>
+      <button class="btn" type="button" onclick="saveTextSetting('kolekte_keterangan','kolekte_keterangan')">Simpan Keterangan</button>
+
+      <hr class="divider">
+      <h3>Kolekte Stasi Entrop</h3>
+      <form id="entropForm">
+        <input id="entrop_id" type="hidden">
+        <div class="field"><label>Uraian / tanggal</label><input id="entrop_uraian"></div>
+        <div class="grid">
+          <div class="field"><label>Tabel 1</label><input id="entrop_tabel1"></div>
+          <div class="field"><label>Tabel 2</label><input id="entrop_tabel2"></div>
+        </div>
+        <div class="field"><label>Keterangan lain</label><input id="entrop_ket_lain"></div>
+        <button class="btn btn-gold" type="submit">Simpan Baris Kolekte Entrop</button>
+      </form>
+      <div id="entropList" class="record-list"></div>
+      <hr class="divider">
+      <h3>Keterangan Kolekte Entrop</h3>
+      <div class="field"><label>Keterangan tambahan</label><textarea id="entrop_keterangan"></textarea></div>
+      <button class="btn" type="button" onclick="saveTextSetting('kolekte_entrop_keterangan','entrop_keterangan')">Simpan Keterangan Entrop</button>
+    </section>
+
+    <!-- LAGU MISA -->
+    <section id="tab-lagu" class="tab-content panel">
+      <h2>Susunan Lagu Misa</h2>
+      <p class="muted">Atur judul kolom dan daftar lagu Misa. Baris yang sudah ada akan diperbarui berdasarkan ID.</p>
+      <form id="laguHeaderForm">
+        <div class="grid-3">
+          <div class="field"><label>Kolom 1</label><input id="lagu_h1"></div>
+          <div class="field"><label>Kolom 2</label><input id="lagu_h2"></div>
+          <div class="field"><label>Kolom 3</label><input id="lagu_h3"></div>
+          <div class="field"><label>Kolom 4</label><input id="lagu_h4"></div>
+          <div class="field"><label>Kolom 5</label><input id="lagu_h5"></div>
+        </div>
+        <button class="btn btn-gold" type="submit">Simpan Judul Kolom</button>
+      </form>
+      <hr class="divider">
+      <form id="laguForm">
+        <input id="lagu_id" type="hidden">
+        <div class="grid">
+          <div class="field"><label>Kolom 1</label><input id="lagu_c1"></div>
+          <div class="field"><label>Kolom 2</label><input id="lagu_c2"></div>
+          <div class="field"><label>Kolom 3</label><input id="lagu_c3"></div>
+          <div class="field"><label>Kolom 4</label><input id="lagu_c4"></div>
+          <div class="field"><label>Kolom 5</label><input id="lagu_c5"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-gold" type="submit">Simpan Baris Lagu</button>
+          <button class="btn btn-light" type="button" onclick="resetLaguForm()">Baris Baru</button>
+        </div>
+      </form>
+      <div id="laguList" class="record-list"></div>
+    </section>
+
+    <!-- PENGUMUMAN -->
+    <section id="tab-pengumuman" class="tab-content panel">
+      <h2>Pengumuman Paroki</h2>
+      <form id="pengumumanForm">
+        <input id="peng_id" type="hidden">
+        <div class="grid">
+          <div class="field"><label>Jenis pengumuman</label><select id="peng_jenis"><option value="perkawinan">Pengumuman Perkawinan</option><option value="kegiatan">Kegiatan &amp; Lainnya</option></select></div>
+          <div class="field"><label>Judul</label><input id="peng_judul" required></div>
+        </div>
+        <div class="field"><label>Isi pengumuman</label><textarea id="peng_isi"></textarea></div>
+        <div class="field"><label>Gambar (opsional)</label><input id="peng_gambar" type="file" accept="image/jpeg,image/png,image/webp"></div>
+        <div class="form-actions">
+          <button class="btn btn-gold" type="submit">Simpan Pengumuman</button>
+          <button class="btn btn-light" type="button" onclick="resetPengumumanForm()">Form Baru</button>
+        </div>
+      </form>
+      <div id="pengumumanList" class="record-list"></div>
+    </section>
+
+    <!-- GALERI -->
+    <section id="tab-galeri" class="tab-content panel">
+      <h2>Galeri Foto</h2>
+      <form id="galeriForm">
+        <input id="galeri_id" type="hidden">
+        <div class="field"><label>Judul foto</label><input id="galeri_judul" required></div>
+        <div class="field"><label>Foto</label><input id="galeri_gambar" type="file" accept="image/jpeg,image/png,image/webp"></div>
+        <div class="form-actions">
+          <button class="btn btn-gold" type="submit">Simpan Foto</button>
+          <button class="btn btn-light" type="button" onclick="resetGaleriForm()">Form Baru</button>
+        </div>
+      </form>
+      <div id="galeriList" class="record-list"></div>
+    </section>
+
+    <!-- MADAH -->
+    <section id="tab-madah" class="tab-content panel">
+      <h2>Madah Bhakti</h2>
+      <form id="madahForm">
+        <input id="madah_id" type="hidden">
+        <div class="field"><label>Judul</label><input id="madah_judul" required></div>
+        <div class="field"><label>Isi madah</label><textarea id="madah_isi"></textarea></div>
+        <div class="field"><label>Gambar (opsional)</label><input id="madah_gambar" type="file" accept="image/jpeg,image/png,image/webp"></div>
+        <div class="form-actions">
+          <button class="btn btn-gold" type="submit">Simpan Madah</button>
+          <button class="btn btn-light" type="button" onclick="resetMadahForm()">Form Baru</button>
+        </div>
+      </form>
+      <div id="madahList" class="record-list"></div>
+    </section>
+
+    <!-- DOKUMEN -->
+    <section id="tab-dokumen" class="tab-content panel">
+      <h2>Dokumen Paroki (PDF)</h2>
+      <form id="dokumenForm">
+        <input id="dokumen_id" type="hidden">
+        <div class="field"><label>Judul dokumen</label><input id="dokumen_judul" required></div>
+        <div class="field"><label>Deskripsi</label><textarea id="dokumen_deskripsi"></textarea></div>
+        <div class="field"><label>File PDF</label><input id="dokumen_file" type="file" accept="application/pdf"></div>
+        <div class="form-actions">
+          <button class="btn btn-gold" type="submit">Simpan Dokumen</button>
+          <button class="btn btn-light" type="button" onclick="resetDokumenForm()">Form Baru</button>
+        </div>
+      </form>
+      <div id="dokumenList" class="record-list"></div>
+    </section>
+
+    <!-- UMKM -->
+    <section id="tab-umkm" class="tab-content panel">
+      <h2>UMKM Paroki</h2>
+      <form id="umkmForm">
+        <input id="umkm_id" type="hidden">
+        <div class="grid">
+          <div class="field"><label>Nama UMKM / produk</label><input id="umkm_nama" required></div>
+          <div class="field"><label>Harga</label><input id="umkm_harga"></div>
+          <div class="field"><label>Kontak</label><input id="umkm_kontak"></div>
+          <div class="field"><label>Gambar</label><input id="umkm_gambar" type="file" accept="image/jpeg,image/png,image/webp"></div>
+        </div>
+        <div class="field"><label>Deskripsi</label><textarea id="umkm_deskripsi"></textarea></div>
+        <div class="form-actions">
+          <button class="btn btn-gold" type="submit">Simpan UMKM</button>
+          <button class="btn btn-light" type="button" onclick="resetUmkmForm()">Form Baru</button>
+        </div>
+      </form>
+      <div id="umkmList" class="record-list"></div>
+    </section>
+
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/admin-features.js"></script>
+</body>
+</html>
