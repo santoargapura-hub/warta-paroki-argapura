@@ -1023,5 +1023,130 @@ function openLb(src, judul) {
 function closeLb() {
   document.getElementById('galeriLightbox').classList.remove('show');
 }
+// FITUR INSTALL PWA (ANDROID & IPHONE) SAAT SCROLL KE BAWAH
+(function() {
+  const DISMISS_KEY = 'warta_pwa_dismissed_at';
+  const INSTALLED_KEY = 'warta_pwa_installed';
+  const SCROLL_THRESHOLD = 180; // muncul setelah di-scroll ke bawah sejauh 180px
 
+  let deferredPrompt = null;
+  let isInstalled = false;
+  let dismissedRecently = false;
+
+  const banner = document.getElementById('pwaInstallBanner');
+  const installBtn = document.getElementById('pwaInstallBtn');
+  const dismissBtn = document.getElementById('pwaDismissBtn');
+  const iosModal = document.getElementById('iosInstallModal');
+
+  if (!banner || !installBtn) return;
+
+  function isIosDevice() {
+    const ua = window.navigator.userAgent || '';
+    const isAppleMobile = /iPhone|iPad|iPod/i.test(ua);
+    const isIpadOs = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+    return isAppleMobile || isIpadOs;
+  }
+
+  function checkStandaloneMode() {
+    const byDisplayMode = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+    const byFullscreen = window.matchMedia && window.matchMedia('(display-mode: fullscreen)').matches;
+    const byIosNavigator = window.navigator.standalone === true;
+    const byFlag = localStorage.getItem(INSTALLED_KEY) === '1';
+    return Boolean(byDisplayMode || byFullscreen || byIosNavigator || byFlag);
+  }
+
+  function refreshDismissState() {
+    const raw = Number(localStorage.getItem(DISMISS_KEY) || 0);
+    // Sembunyikan sementara selama 24 jam jika tombol ✕ ditekan
+    dismissedRecently = raw > 0 && (Date.now() - raw) < (24 * 60 * 60 * 1000);
+  }
+
+  function hideInstallBanner() {
+    banner.style.display = 'none';
+    if (iosModal) iosModal.style.display = 'none';
+  }
+
+  function markAsInstalled() {
+    isInstalled = true;
+    deferredPrompt = null;
+    localStorage.setItem(INSTALLED_KEY, '1');
+    localStorage.removeItem(DISMISS_KEY);
+    hideInstallBanner();
+  }
+
+  function canShowOnCurrentState() {
+    if (isInstalled || checkStandaloneMode()) return false;
+    if (dismissedRecently) return false;
+    // Hanya tampilkan di halaman utama dan saat layar di-scroll ke bawah
+    const onHome = typeof activePage === 'undefined' ? true : (activePage === 'home');
+    const scrolledDown = window.scrollY >= SCROLL_THRESHOLD;
+    // Bisa tampil di Android/desktop saat ada event prompt, atau di iPhone/iPad
+    return onHome && scrolledDown && (Boolean(deferredPrompt) || isIosDevice());
+  }
+
+  function updateBannerVisibility() {
+    if (canShowOnCurrentState()) {
+      banner.style.display = 'flex';
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+
+  isInstalled = checkStandaloneMode();
+  refreshDismissState();
+
+  if (isInstalled) {
+    hideInstallBanner();
+    return;
+  }
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    updateBannerVisibility();
+  });
+
+  window.addEventListener('appinstalled', () => {
+    markAsInstalled();
+  });
+
+  // Jika mode standalone aktif di kemudian hari, pastikan notifikasi hilang
+  if (window.matchMedia) {
+    const mm = window.matchMedia('(display-mode: standalone)');
+    const onModeChange = () => {
+      if (checkStandaloneMode()) markAsInstalled();
+      else updateBannerVisibility();
+    };
+    if (mm.addEventListener) mm.addEventListener('change', onModeChange);
+    else if (mm.addListener) mm.addListener(onModeChange);
+  }
+
+  window.addEventListener('scroll', updateBannerVisibility, { passive: true });
+
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if (choice && choice.outcome === 'accepted') {
+        markAsInstalled();
+      } else {
+        deferredPrompt = null;
+        updateBannerVisibility();
+      }
+      return;
+    }
+
+    if (isIosDevice() && iosModal) {
+      iosModal.style.display = 'grid';
+    }
+  });
+
+  if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => {
+      localStorage.setItem(DISMISS_KEY, String(Date.now()));
+      dismissedRecently = true;
+      hideInstallBanner();
+    });
+  }
+})();
 showHome();
